@@ -10,6 +10,8 @@ __author__ = 'christoph.statz <at> tu-dresden.de'
 from maui.backend.prototypes.fd import DummyStream
 import sys
 
+# TODO: GPU: Here add GPU accellerator data.
+
 class Context(object):
 
     def __init__(self, dtype='float64', master=True):

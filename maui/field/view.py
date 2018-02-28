@@ -6,11 +6,12 @@ from __future__ import print_function
 
 __author__ = 'christoph.statz <at> tu-dresden.de'
 
-from maui.backend.prototypes.helper import create_mask_from_indices
+from maui.backend.helper import create_mask_from_indices
 from numpy import ndarray, newaxis
 import operator
 from maui.field.field import Field
 
+# TODO: GPU: Add gpu support for the magic members
 
 class View(Field):
 

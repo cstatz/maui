@@ -14,13 +14,32 @@ cli.add_argument('-h', '--help', action='store_true', help='show this help messa
 
 from maui.backend.serial.context import SerialContext
 
-def guess_context(cli):
+loglevel = logging.CRITICAL
 
+def guess_context(cli):
+    # TODO: GPU: Add GPU
     verbosity_group = cli.add_mutually_exclusive_group()
-    verbosity_group.add_argument("--verbose", "-v", action="count")
+    verbosity_group.add_argument("--verbose", "-v", action="count", default=0)
+    verbosity_group.add_argument("--gpu", "-g", action="store_true")
     verbosity_group.add_argument("-q", "--quiet", action="store_true")
 
     args, unknown = cli.parse_known_args()
+    loglevel = logging.CRITICAL - int(args.verbose) * 10
+
+    if loglevel<10: loglevel = 10
+    if loglevel>50: loglevel = 50
+ 
+    logger = logging.getLogger(__name__)
+    logger.setLevel(loglevel)
+
+    gpu_computing = False
+
+    if args.gpu:
+        try:
+            from numpy import cuda
+            gpu_computing = cuda.is_available()
+        except:
+            pass
 
     try:
         from mpi4py import MPI
@@ -34,11 +53,13 @@ def guess_context(cli):
     except:
         return SerialContext(), args, unknown
 
-
 logger = logging.getLogger(__name__)
+
 context, args, arguments = guess_context(cli)
 stdout = context.stdout
 stderr = context.stderr
+
+loglevel = logger.level
 
 if args.help:
     cli.print_help(file=stderr)
@@ -49,7 +70,6 @@ try:
     from nicelog.formatters import ColorLineFormatter
     handler = logging.StreamHandler(stdout)
     handler.setFormatter(ColorLineFormatter(show_date=True, show_function=True, show_filename=True, message_inline=True))
-    handler.setLevel(logging.DEBUG)
     logger.addHandler(handler)
 except ImportError:
     handler = logging.StreamHandler(stdout)
@@ -58,7 +78,6 @@ except ImportError:
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
-logger.setLevel(logging.DEBUG)
 
 if isinstance(context, SerialContext):
     logger.info("Running MAUI with serial backend.")

@@ -19,7 +19,7 @@ def calculate_axes(bounds, pitch):
     tmp_bounds = [list(x) for x in bounds]
 
     for i in range(dimension):
-        tmp_bounds[1][i] += pitch[i]
+        #tmp_bounds[1][i] += pitch[i]
         axes.append(np.arange(tmp_bounds[0][i], tmp_bounds[1][i], pitch[i]))
 
     return tuple(axes)

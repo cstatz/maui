@@ -7,9 +7,9 @@ from __future__ import print_function
 __author__ = 'christoph.statz <at> tu-dresden.de'
 
 from numpy import ndindex
-from maui.backend.prototypes.helper import calc_local_indices, calculate_adjacency, \
+from maui.backend.helper import calc_local_indices, calculate_adjacency, \
     create_mask_from_indices, do_create_domain, modify_halos_and_indices
-from maui.backend.mpi.domain import Domain
+from maui.backend.domain import Domain
 from maui.mesh.helper import intersect_bounds
 from maui.backend import context
 
@@ -31,6 +31,7 @@ class Partition(object):
         """
 
         # todo: implement properties as properties
+        self.parent = self
         self.mesh = mesh
         self.partitions = partitions
         self.stencil = stencil
@@ -82,7 +83,7 @@ class Partition(object):
         self.__meta_data = dict()
 
         for i in range(context.size):
-            key = data[i].keys()[0]
+            key = list(data[i].keys())[0]
             if data[i][key]:
                 mask = []
                 for j in range(dim):
@@ -109,7 +110,9 @@ class Partition(object):
         if shift is not None:
             mesh.shift(shift)
 
-        return Partition(mesh, self.partitions, stencil, bounds)
+        p = Partition(mesh, self.partitions, stencil, bounds)
+        p.parent = self
+        return p
 
     @property
     def rank_map(self):

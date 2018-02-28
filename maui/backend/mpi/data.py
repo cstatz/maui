@@ -6,10 +6,10 @@ from __future__ import print_function
 
 __author__ = 'christoph.statz <at> tu-dresden.de'
 
-from maui.backend.prototypes.helper import compute_sender, compute_receiver_halo_location
-from maui.backend.mpi.array import SerialArray
-from maui.backend.mpi.index import IndexBoundsHandler
-from maui.backend.mpi.halo import ReceiveHalo, TransmitHalo
+from maui.backend.helper import compute_sender, compute_receiver_halo_location
+from maui.backend.array import SerialArray
+from maui.backend.index import IndexBoundsHandler
+from maui.backend.halo import ReceiveHalo, TransmitHalo
 
 from maui.backend import context
 
@@ -147,7 +147,7 @@ class DataPartition(object):
             self.__finalize_sync_setup()
             self.__ready_for_sync = True
 
-        keys = self.partition.domains.keys()
+        keys = list(self.partition.domains.keys())
 
         if keys:
             key = keys[0]

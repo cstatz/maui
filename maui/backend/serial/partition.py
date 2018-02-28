@@ -9,9 +9,9 @@ __author__ = 'christoph.statz <at> tu-dresden.de'
 
 from numpy import ndindex
 
-from maui.backend.prototypes.helper import calc_local_indices, calculate_adjacency, \
+from maui.backend.helper import calc_local_indices, calculate_adjacency, \
     create_mask_from_indices, do_create_domain, modify_halos_and_indices
-from maui.backend.serial.domain import Domain
+from maui.backend.domain import Domain
 from maui.mesh.helper import intersect_bounds
 
 # TODO: Partition prototype is needed
@@ -28,6 +28,7 @@ class Partition(object):
         """
 
         # todo: implement properties as properties
+        self.parent = self
         self.mesh = mesh
         self.partitions = partitions
         self.stencil = stencil
@@ -76,4 +77,7 @@ class Partition(object):
         if shift is not None:
             mesh.shift(shift)
 
-        return Partition(mesh, self.partitions, stencil, bounds)
+        p = Partition(mesh, self.partitions, stencil, bounds)
+        p.parent = self
+        return p
+

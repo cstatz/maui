@@ -9,13 +9,15 @@ __author__ = 'christoph.statz <at> tu-dresden.de'
 from maui.backend import context
 from maui.mesh.prototypes import Mesh
 from numpy import ndarray, newaxis, meshgrid, asarray
-from maui.backend.prototypes.helper import create_mask_from_indices
+from maui.backend.helper import create_mask_from_indices
 import operator
 import warnings
 
+# TODO: GPU: Add gpu support for the magic members
+
 class Field(object):
 
-    def __init__(self, partition, name, unit, rank, bounds=None):
+    def __init__(self, partition, name, unit, rank, bounds=None, distribute=True):
         """ Field prototype class.
 
         :param partition: Partition or Mesh, coordinate space associated with the field.
@@ -32,7 +34,11 @@ class Field(object):
         self.__unit = unit
 
         if isinstance(partition, Mesh):
-            partition = context.create_partition(partition, bounds)
+            if distribute:
+                partition = context.create_partition(partition, bounds)
+            else:
+                from maui.backend.serial.partition import Partition as SerialPartition
+                partition = SerialPartition(partition, tuple([1 for _ in range(partition.dimension)]), tuple(0 for _ in range(partition.dimension)))
         elif bounds is not None:
             partition = partition.copy(bounds)
 
@@ -72,6 +78,9 @@ class Field(object):
 
                 self.__interpolator[key].append(self.partition.domains[key].mesh.interpolator(self.partition.domains[key].mesh.axes, data))
                 #self.__interpolator[key].append(self.partition.domains[key].mesh.interpolator(points.T, data.ravel(order='F')))
+
+    def enlarge(self, add):
+        pass
 
     def __getitem__(self, index):
         return self.__domain_data[index]

@@ -11,7 +11,7 @@ from .field import Field
 
 class ScalarField(Field):
 
-    def __init__(self, mesh, name, unit, bounds=None):
+    def __init__(self, mesh, name, unit, bounds=None, distribute=True):
         """ Scalar field class.
 
         :param partition: Partition or Mesh, coordinate space associated with the field.
@@ -22,5 +22,5 @@ class ScalarField(Field):
 
         """
 
-        Field.__init__(self, mesh, name, unit, rank=0, bounds=bounds)
+        Field.__init__(self, mesh, name, unit, rank=0, bounds=bounds, distribute=distribute)
 

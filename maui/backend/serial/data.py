@@ -6,10 +6,10 @@ from __future__ import print_function
 
 __author__ = 'christoph.statz <at> tu-dresden.de'
 
-from maui.backend.prototypes.helper import compute_sender, compute_receiver_halo_location
-from maui.backend.serial.array import SerialArray
-from maui.backend.serial.index import IndexBoundsHandler
-from maui.backend.serial.halo import ReceiveHalo, TransmitHalo
+from maui.backend.helper import compute_sender, compute_receiver_halo_location
+from maui.backend.array import SerialArray
+from maui.backend.index import IndexBoundsHandler
+from maui.backend.halo import ReceiveHalo, TransmitHalo
 
 import numpy
 
